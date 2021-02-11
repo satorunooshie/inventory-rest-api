@@ -39,8 +39,20 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateItem(w http.ResponseWriter, r *http.Request) {
+}
+
+func deleteItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
+
+	for index, item := range inventory {
+		if item.UID == params["uid"] {
+			// Delete item from slice
+			inventory = append(inventory[:index], inventory[index+1:]...)
+			break
+		}
+	}
+
 	json.NewEncoder(w).Encode(params)
 }
 
@@ -49,6 +61,7 @@ func handleRequest() {
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/inventory", getInventory).Methods("GET")
 	router.HandleFunc("/inventory/{uid}", updateItem).Methods("GET")
+	router.HandleFunc("/inventory/{uid}", deleteItem).Methods("POST")
 	router.HandleFunc("/inventory", addItem).Methods("POST")
 	log.Fatal(http.ListenAndServe(":1000", router))
 	/*
