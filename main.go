@@ -10,7 +10,7 @@ import (
 
 type Item struct {
 	UID string `json:"UID"`
-	Name string `json:"Title"`
+	Name string `json:"Name"`
 	Desc string `json:"Desc"`
 	Price float64 `json:"Price"`
 }
@@ -29,7 +29,13 @@ func getInventory(w http.ResponseWriter, r *http.Request) {
 }
 
 func addItem(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Function Called: addItem()")
+	w.Header().Set("Content-Type", "application/json")
+	var item Item
+	// obtain item from request JSON
+	_ = json.NewDecoder(r.Body).Decode(&item)
+	inventory = append(inventory, item)
+	// Show item in response JSON for
+	json.NewEncoder(w).Encode(item)
 }
 
 func handleRequest() {
