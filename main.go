@@ -13,7 +13,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func handleRequest() {
 router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", home)
+	router.HandleFunc("/", home).Methods("GET")
 	log.Fatal(http.ListenAndServe(":1000", router))
 	/*
 	http.HandleFunc("/", home)
