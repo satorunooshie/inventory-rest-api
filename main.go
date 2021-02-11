@@ -9,6 +9,7 @@ import (
 )
 
 type Item struct {
+	UID string `json:"UID"`
 	Name string `json:"Title"`
 	Desc string `json:"Desc"`
 	Price float64 `json:"Price"`
@@ -22,7 +23,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func getInventory(w http.ResponseWriter, r *http.Request) {
 	inventory := Inventory{
-		Item{Name: "Cheese", Desc: "A fine block of cheese", Price: 400},
+		Item{UID: "0", Name: "Cheese", Desc: "A fine block of cheese", Price: 400},
 	}
 	fmt.Println("Function Called: getInventory()")
 	json.NewEncoder(w).Encode(inventory)
