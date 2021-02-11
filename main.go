@@ -15,7 +15,7 @@ type Item struct {
 	Price float64 `json:"Price"`
 }
 
-type Inventory []Item
+var inventory []Item
 
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Function Called: home()")
@@ -23,10 +23,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func getInventory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	inventory := Inventory{
-		Item{UID: "0", Name: "Cheese", Desc: "A fine block of cheese", Price: 400},
-	}
 
 	fmt.Println("Function Called: getInventory()")
 	json.NewEncoder(w).Encode(inventory)
@@ -49,5 +45,12 @@ func handleRequest() {
 }
 
 func main() {
+	// Data Store
+	inventory = append(inventory, Item{
+		UID: "0",
+		Name: "Cheese",
+		Desc: "A fine block of cheese",
+		Price: 400,
+	})
 	handleRequest()
 }
