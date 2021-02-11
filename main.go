@@ -39,12 +39,22 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+
+	for index, item := range inventory {
+		if item.UID == params["uid"] {
+			inventory = append(inventory[:index], inventory[index+1:]...)
+			break
+		}
+	}
+	json.NewEncoder(w).Encode(inventory)
 }
 
 func deleteItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
-
+	/*
 	for index, item := range inventory {
 		if item.UID == params["uid"] {
 			// Delete item from slice
@@ -52,8 +62,19 @@ func deleteItem(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-
+	 */
+	_deleteItemAtUid(params["uid"], w)
 	json.NewEncoder(w).Encode(params)
+}
+
+func _deleteItemAtUid(uid string, w http.ResponseWriter) {
+	for index, item := range inventory {
+		if item.UID == uid {
+			// Delete item from slice
+			inventory = append(inventory[:index], inventory[index+1:]...)
+			break
+		}
+	}
 }
 
 func handleRequest() {
