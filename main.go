@@ -22,9 +22,12 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func getInventory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	inventory := Inventory{
 		Item{UID: "0", Name: "Cheese", Desc: "A fine block of cheese", Price: 400},
 	}
+
 	fmt.Println("Function Called: getInventory()")
 	json.NewEncoder(w).Encode(inventory)
 }
@@ -34,7 +37,7 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequest() {
-router := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/inventory", getInventory).Methods("GET")
 	router.HandleFunc("/inventory", addItem).Methods("POST")
