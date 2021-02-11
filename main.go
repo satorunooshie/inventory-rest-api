@@ -40,14 +40,16 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 
 func updateItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
 
-	for index, item := range inventory {
-		if item.UID == params["uid"] {
-			inventory = append(inventory[:index], inventory[index+1:]...)
-			break
-		}
-	}
+	var item Item
+	// obtain item from request JSON
+	_ = json.NewDecoder(r.Body).Decode(&item)
+	params := mux.Vars(r)
+	// Delete item
+	_deleteItemAtUid(params["uid"])
+	// Create it again with data from request
+	inventory = append(inventory, item)
+
 	json.NewEncoder(w).Encode(inventory)
 }
 
@@ -63,11 +65,11 @@ func deleteItem(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	 */
-	_deleteItemAtUid(params["uid"], w)
+	_deleteItemAtUid(params["uid"])
 	json.NewEncoder(w).Encode(params)
 }
 
-func _deleteItemAtUid(uid string, w http.ResponseWriter) {
+func _deleteItemAtUid(uid string) {
 	for index, item := range inventory {
 		if item.UID == uid {
 			// Delete item from slice
@@ -81,7 +83,7 @@ func handleRequest() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/inventory", getInventory).Methods("GET")
-	router.HandleFunc("/inventory/{uid}", updateItem).Methods("GET")
+	router.HandleFunc("/inventory/{uid}", updateItem).Methods("PUT")
 	router.HandleFunc("/inventory/{uid}", deleteItem).Methods("POST")
 	router.HandleFunc("/inventory", addItem).Methods("POST")
 	log.Fatal(http.ListenAndServe(":1000", router))
