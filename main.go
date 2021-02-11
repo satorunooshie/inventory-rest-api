@@ -38,10 +38,17 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(item)
 }
 
+func updateItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	json.NewEncoder(w).Encode(params)
+}
+
 func handleRequest() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", home).Methods("GET")
 	router.HandleFunc("/inventory", getInventory).Methods("GET")
+	router.HandleFunc("/inventory/{uid}", updateItem).Methods("GET")
 	router.HandleFunc("/inventory", addItem).Methods("POST")
 	log.Fatal(http.ListenAndServe(":1000", router))
 	/*
